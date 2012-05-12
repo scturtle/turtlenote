@@ -3,9 +3,15 @@ from bottle import static_file
 from markdown import markdown
 import os, stat, json
 
-@route('/bootstrap/<path:path>')
+markdown_options =['extra']
+
+@route('/css/<path:path>')
 def server_static(path):
-    return static_file(path, root='bootstrap')
+    return static_file(path, root='css')
+
+@route('/js/<path:path>')
+def server_static(path):
+    return static_file(path, root='js')
 
 @route('/img/<path:path>')
 def server_static(path):
@@ -13,7 +19,7 @@ def server_static(path):
 
 @post('/convert')
 def convert():
-    return markdown(request.forms.get('content','').decode('utf-8'))
+    return markdown(request.forms.get('content','').decode('utf-8'),markdown_options)
 
 @post('/save')
 def save():
@@ -54,8 +60,8 @@ def savehtml():
     filename = os.path.basename(filename)
     if filename.lower().endswith('.md'):
         filename = filename[:-3]
-    tpl = file('tmp.html').read()
-    html = tpl.replace('{{title}}',filename).replace('{{content}}',markdown(content))
+    tpl = file('views/tmp.html').read()
+    html = tpl.replace('{{title}}',filename).replace('{{content}}',markdown(content,markdown_options))
     rmtree('document/html') # shutil.rmtree BU KAO PU
     os.mkdir('document/html')
     with file('document/html/index.html','w') as f:
