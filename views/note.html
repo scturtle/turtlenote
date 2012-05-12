@@ -6,16 +6,32 @@
     <!--<link href="favicon.ico" rel="shortcut icon" type="image/x-icon"/>-->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/prettify.css" rel="stylesheet">
     <style type="text/css">
       body {height:100%}
       html {height:100%}
       #btnarea {padding-top:10px;text-align:center;}
+      #title {margin:5px 5px;font-size:30px;float:left;position:absolute;}
       .btn {width:10%}
       #textarea {height:90%}
       #input {float:left;position:relative;width:50%;height:100%;margin:10px 0px 0px 3px;padding:0px}
       #output {float:left;position:relative;width:49%;height:100%;margin:10px 0px 0px 3px;padding:0px;overflow-y:scroll;}
     </style>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>
+  </head>
+  <body>
+
+    <div id='btnarea'>
+      <div id='title'>turtlenote</div>
+      <button id='conv' class='btn btn-primary' onClick='convert()'>convert</button>
+    </div>
+    <div id='textarea'>
+      <textarea id='input'></textarea>
+      <div id='output' class='well'></div>
+    </div>
+
+    <!--js codes-->
+    <script src="js/jquery.min.js"> </script>
+    <script src="js/prettify.js"></script>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true } });
     </script>
@@ -28,18 +44,13 @@
       }
       function convert() {
         $.post('/convert',{content:$('#input').val()},function(result){
-            $('#output').html(result); MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);});
+            $('#output').html(result); MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);
+            $('table').addClass('table table-bordered');
+            $('code').each(function(){if($(this).attr('class')) $(this).addClass('prettyprint');});
+            prettyPrint();
+            });
       }
     </script>
-  </head>
-  <body>
-    <div id='btnarea'>
-      <button id='conv' class='btn btn-primary' onClick='convert()'>convert</button>
-    </div>
-    <div id='textarea'>
-      <textarea id='input'></textarea>
-      <div id='output' class='well'></div>
-    </div>
   </body>
 </html>
 <!-- vim: set ft=html ts=2 sts=2 sw=2 et sta: -->
