@@ -1,7 +1,7 @@
 from bottle import *
 from bottle import static_file
 from markdown import markdown
-import os, stat, json
+import os, stat, json, shutil
 
 markdown_options =['extra']
 
