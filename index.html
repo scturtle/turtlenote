@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>turtlenote</title>
+    <link rel="stylesheet" type="text/css" href="github.css"/>
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/foundation/4.1.2/css/foundation.min.css"/>
+    <link rel="stylesheet" type="text/css" href="http://google-code-prettify.googlecode.com/svn-history/r298/trunk/src/prettify.css"/>
+    <style>
+      body, html {height:99%;}
+      #nav {margin-top:10px;}
+      #title {font-size:200%;float:left;margin-left:10px;}
+      #vi {float:left;width:120px;margin:5px 20px;}
+      #vi div.switch {margin-bottom:0;}
+      #textarea {height:90%;}
+      #input {
+        float:left;width:49%;height:100%;margin-left:5px;font-size:18px;
+        border:1px solid #D9D9D9;
+      }
+      #output {float:right;width:50%;height:100%;margin-right:5px;overflow-y:scroll;}
+    </style>
+  </head>
+  <body>
+    <div id=nav>
+      <div id=title>Turtlenote</div>
+      <div id=vi>
+        <div class="small-1 switch tiny">
+          <input onclick="switchViMode()" id="x" name="switch-x" type="radio" checked>
+          <label for="x" onclick="">Vi-Mode</label>
+          <input onclick="switchViMode()" id="x1" name="switch-x" type="radio">
+          <label for="x1" onclick="">On</label>
+          <span></span>
+        </div>
+      </div>
+      <a onclick="conv()" id=conv class="small button">Convert</a>
+    </div>
+    <div id=textarea>
+      <div id=input>Turtlenote
+=====
+
+Hi, welcome to Turtlenote.
+
+$e^{i\pi} + 1 = 0$
+
+[Google](http://www.google.com)
+
+```python
+print "Hello world!"
+```
+![img](http://www.python.org/images/python-logo.gif)</div>
+      <div class="panel md" id=output></div>
+    </div>
+    <!--ace editor-->
+    <script src="http://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
+    <script src="http://rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/keybinding-vim.js"></script>
+    <script>
+      var editor = ace.edit("input");
+      var vi = ace.require("ace/keyboard/vim");
+      editor.setTheme("ace/theme/tomorrow"); //or github
+      editor.getSession().setMode("ace/mode/markdown");
+      //editor.setKeyboardHandler(vi.handler);
+    </script>
+    <!--mathjax-->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true } });
+    </script>
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
+    <script src="http://cdn.jsdelivr.net/jquery/2.0.0/jquery-2.0.0.min.js"></script>
+    <script>
+      window.onbeforeunload = function(){
+        return "Do you really want leave?";
+      }
+      function switchViMode(){
+        if(editor.getKeyboardHandler()!=vi.handler)
+          editor.setKeyboardHandler(vi.handler);
+        else
+          editor.setKeyboardHandler();
+      }
+      var converter = new Showdown.converter();
+      function conv(){
+        var md = converter.makeHtml(editor.getValue());
+        $('#output').html(md);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"output"]);
+        $('code').each(function(){if($(this).attr('class')) $(this).addClass('prettyprint');});prettyPrint();
+      }
+      setInterval("conv()", 5000);
+    </script>
+  </body>
+</html>
